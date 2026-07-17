@@ -4,7 +4,7 @@ import { useState, FormEvent } from "react";
 import { api, extractErrorMessage, TrackedReport } from "@/lib/api";
 import StatusBadge from "@/components/StatusBadge";
 import { AlertCard } from "@/components/Card";
-import { Search, ChevronLeft } from "lucide-react";
+import { Search, ChevronLeft, Calendar, Clock, Activity, FileText, Info, HelpCircle, ArrowLeft, Plus } from "lucide-react";
 
 export default function TrackReportPage() {
   const [loading, setLoading] = useState(false);
@@ -98,70 +98,128 @@ export default function TrackReportPage() {
 
         {/* Report Details */}
         {report && (
-          <div className="case-tab" data-tab={report.trackingId}>
-            <div className="space-y-8">
+          <div className="case-tab overflow-hidden shadow-lg border border-line" data-tab={report.trackingId}>
+            {/* Top gold accent line */}
+            <div style={{ height: 4, background: "linear-gradient(90deg, #C9A561, #A37D3F, #C9A561)" }} />
+
+            <div className="p-6 md:p-8 space-y-8">
               {/* Header with Status */}
-              <div className="flex items-start justify-between pb-6 border-b border-line">
-                <div className="flex-1">
-                  <p className="font-mono text-sm text-ink/50 mb-2">Tracking ID</p>
-                  <h2 className="font-display text-2xl font-bold text-ink mb-3">{report.trackingId}</h2>
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <div>
-                      <p className="text-xs text-ink/50 font-mono uppercase">Incident Type</p>
-                      <p className="text-ink font-semibold">{report.incident.type}</p>
-                    </div>
-                  </div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-line gap-4">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#C9A561]/10 border border-[#C9A561]/30 text-[#A37D3F] text-xs font-mono font-semibold uppercase tracking-wider mb-2">
+                    Case File
+                  </span>
+                  <h2 className="font-display text-3xl font-extrabold text-ink tracking-tight mb-1">
+                    {report.trackingId}
+                  </h2>
+                  <p className="text-sm text-ink/60">
+                    Incident Type: <strong className="text-ink font-semibold">{report.incident.type}</strong>
+                  </p>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-ink/50 font-mono uppercase mb-2">Current Status</p>
+                <div className="flex flex-col items-start md:items-end">
+                  <span className="font-mono text-xs text-ink/40 uppercase tracking-widest mb-1.5">
+                    Current Status
+                  </span>
                   <StatusBadge status={report.status} />
                 </div>
               </div>
 
               {/* Report Info Grid */}
-              <div className="grid gap-6 md:grid-cols-3">
-                <div>
-                  <p className="text-xs text-ink/50 font-mono uppercase tracking-widest mb-2">Filed On</p>
-                  <p className="text-ink font-semibold">{new Date(report.createdAt).toLocaleDateString()}</p>
-                  <p className="text-sm text-ink/60">{new Date(report.createdAt).toLocaleTimeString()}</p>
+              <div className="grid gap-4 md:grid-cols-3">
+                {/* Filed On Card */}
+                <div className="p-4 rounded-xl border border-line bg-[#F8F7F3] hover:border-[#C9A561]/50 transition-all flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-[#C9A561]/10 text-[#A37D3F] shrink-0">
+                    <Calendar size={18} />
+                  </div>
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-wider text-ink/40 mb-1">Filed On</p>
+                    <p className="text-ink font-bold text-sm">
+                      {new Date(report.createdAt).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-xs text-ink/50 mt-0.5">
+                      {new Date(report.createdAt).toLocaleTimeString(undefined, {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-ink/50 font-mono uppercase tracking-widest mb-2">Incident Date</p>
-                  <p className="text-ink font-semibold">
-                    {new Date(report.incident.dateOfIncident).toLocaleDateString()}
-                  </p>
-                  <p className="text-sm text-ink/60">
-                    {new Date(report.incident.dateOfIncident).toLocaleTimeString()}
-                  </p>
+
+                {/* Incident Date Card */}
+                <div className="p-4 rounded-xl border border-line bg-[#F8F7F3] hover:border-[#C9A561]/50 transition-all flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-[#C9A561]/10 text-[#A37D3F] shrink-0">
+                    <Clock size={18} />
+                  </div>
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-wider text-ink/40 mb-1">Incident Date</p>
+                    <p className="text-ink font-bold text-sm">
+                      {new Date(report.incident.dateOfIncident).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-xs text-ink/50 mt-0.5">
+                      {new Date(report.incident.dateOfIncident).toLocaleTimeString(undefined, {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-ink/50 font-mono uppercase tracking-widest mb-2">Days Since Report</p>
-                  <p className="text-ink font-semibold">
-                    {Math.floor((new Date().getTime() - new Date(report.createdAt).getTime()) / (1000 * 60 * 60 * 24))}
-                  </p>
-                  <p className="text-sm text-ink/60">days ago</p>
+
+                {/* Days Elapsed Card */}
+                <div className="p-4 rounded-xl border border-line bg-[#F8F7F3] hover:border-[#C9A561]/50 transition-all flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-[#C9A561]/10 text-[#A37D3F] shrink-0">
+                    <Activity size={18} />
+                  </div>
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-wider text-ink/40 mb-1">Duration</p>
+                    <p className="text-ink font-bold text-sm">
+                      {Math.max(0, Math.floor((new Date().getTime() - new Date(report.createdAt).getTime()) / (1000 * 60 * 60 * 24)))} Days Elapsed
+                    </p>
+                    <p className="text-xs text-ink/50 mt-0.5">
+                      Since initial submission
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Status Timeline */}
-              <div>
-                <h3 className="font-display text-lg font-semibold text-ink mb-6">Investigation Timeline</h3>
+              <div className="pt-2">
+                <div className="flex items-center gap-2 mb-6">
+                  <FileText size={18} className="text-[#A37D3F]" />
+                  <h3 className="font-display text-lg font-bold text-ink tracking-tight">
+                    Investigation Timeline
+                  </h3>
+                </div>
                 
-                <div className="timeline space-y-6">
+                <div className="timeline space-y-8">
                   {report.statusHistory.map((entry, i) => (
-                    <div key={i} className="timeline-item">
-                      <div className="flex items-start justify-between">
+                    <div key={i} className="timeline-item pb-1">
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-2">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
+                          <div className="flex items-center gap-3 flex-wrap">
                             <StatusBadge status={entry.status} />
                             <span className="text-xs font-mono text-ink/40">
-                              {new Date(entry.changedAt).toLocaleString()}
+                              {new Date(entry.changedAt).toLocaleString(undefined, {
+                                dateStyle: 'medium',
+                                timeStyle: 'short'
+                              })}
                             </span>
                           </div>
-                          {entry.note && (
-                            <p className="mt-2 text-sm leading-relaxed text-ink/70 bg-surface p-3 rounded-lg border border-line">
+                          {entry.note ? (
+                            <div className="mt-3 text-sm leading-relaxed text-ink/70 bg-[#F8F7F3] p-4 rounded-xl border border-line shadow-sm relative">
+                              {/* Speech bubble pointer */}
+                              <div className="hidden md:block absolute -left-1.5 top-4 w-3 h-3 bg-[#F8F7F3] border-l border-b border-line rotate-45" />
                               {entry.note}
-                            </p>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-ink/40 italic mt-2">No official update note attached</p>
                           )}
                         </div>
                       </div>
@@ -171,27 +229,50 @@ export default function TrackReportPage() {
               </div>
 
               {/* Status Explanation */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="font-semibold text-blue-900 mb-3">📋 What do the statuses mean?</p>
-                <ul className="space-y-2 text-sm text-blue-800">
-                  <li><strong>Received:</strong> Your report was successfully submitted</li>
-                  <li><strong>Under Review:</strong> An officer is reviewing your report</li>
-                  <li><strong>Investigating:</strong> Law enforcement is actively investigating</li>
-                  <li><strong>Resolved:</strong> The case has been resolved</li>
-                  <li><strong>Closed:</strong> The case has been closed</li>
-                </ul>
+              <div className="bg-[#F8F7F3] border border-[#E5E2DB] rounded-xl p-5 space-y-4">
+                <div className="flex items-center gap-2">
+                  <Info size={16} className="text-[#A37D3F]" />
+                  <p className="font-display font-bold text-ink text-sm">
+                    Status Reference Guide
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2 text-xs text-ink/70">
+                  <div className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                    <p><strong>Received:</strong> The incident report has been securely registered in the digital queue.</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                    <p><strong>Under Review:</strong> Assignment officer is verifying the information and evidence files.</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0" />
+                    <p><strong>Investigating:</strong> Case is officially assigned to an officer for active investigation.</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0" />
+                    <p><strong>Resolved:</strong> Actions completed. Appropriate results are logged in database.</p>
+                  </div>
+                  <div className="flex items-start gap-2 sm:col-span-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-500 mt-1.5 shrink-0" />
+                    <p><strong>Closed:</strong> No further activity required. Archive record completed.</p>
+                  </div>
+                </div>
               </div>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-line">
                 <button
                   onClick={() => setReport(null)}
-                  className="btn btn-secondary flex-1"
+                  className="btn btn-secondary flex-1 inline-flex items-center justify-center gap-2"
                 >
-                  🔍 Track Another
+                  <ArrowLeft size={16} /> Track Another
                 </button>
-                <a href="/report/new" className="btn btn-primary flex-1">
-                  📋 File New Report
+                <a
+                  href="/report/new"
+                  className="btn btn-primary flex-1 inline-flex items-center justify-center gap-2"
+                >
+                  <Plus size={16} /> File New Report
                 </a>
               </div>
             </div>

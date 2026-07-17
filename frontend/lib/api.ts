@@ -3,7 +3,7 @@ import axios from "axios";
 // Single shared axios instance so base URL and auth header attachment
 // live in exactly one place instead of being repeated on every page.
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001",
   timeout: 15000,
 });
 

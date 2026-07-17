@@ -1,32 +1,74 @@
 /**
- * Integration tests using an in-memory MongoDB, so these run without needing
- * a real Atlas connection - ideal for a defence demo or CI pipeline.
+ * Integration tests — uses the MONGO_URI from .env if present (Atlas),
+ * otherwise falls back to downloading an in-memory MongoDB binary.
  *
  * Run with: npm test
  */
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const mongoose = require("mongoose");
 const request = require("supertest");
+require("dotenv").config();
+
+// Atlas connections can take 10-15 s on first connect — give hooks 30 s.
+jest.setTimeout(30000);
 
 let mongod;
 let app;
 
 beforeAll(async () => {
-  mongod = await MongoMemoryServer.create();
-  process.env.MONGO_URI = mongod.getUri();
   process.env.JWT_ACCESS_SECRET = "test_access_secret";
   process.env.JWT_REFRESH_SECRET = "test_refresh_secret";
   process.env.NODE_ENV = "test";
 
-  await mongoose.connect(process.env.MONGO_URI);
-  // Import app AFTER env vars are set and connection made, so server.js's own
-  // connectDB() call (idempotent) attaches to the same in-memory instance.
+  // Use MONGO_URI from .env if available, pointed at a test database.
+  // Fallback: spin up an in-memory MongoDB (downloads binary on first run).
+  if (process.env.MONGO_URI) {
+    // Point to a dedicated test database so tests don't pollute production data.
+    let uri = process.env.MONGO_URI;
+    if (uri.includes("?")) {
+      const [base, query] = uri.split("?");
+      const parts = base.split("/");
+      if (parts.length > 3) {
+        parts[3] = "crime_scene_test";
+      } else {
+        parts.push("crime_scene_test");
+      }
+      process.env.MONGO_URI = parts.join("/") + "?" + query;
+    } else {
+      const parts = uri.split("/");
+      if (parts.length > 3) {
+        parts[3] = "crime_scene_test";
+      } else {
+        parts.push("crime_scene_test");
+      }
+      process.env.MONGO_URI = parts.join("/");
+    }
+  } else {
+    mongod = await MongoMemoryServer.create();
+    process.env.MONGO_URI = mongod.getUri();
+  }
+
+  // Import app AFTER env vars are set. server.js will call connectDB() itself
+  // (since require.main !== module it won't try to bind a port).
   app = require("../server");
+
+  // Wait for the connection to be ready before running any test.
+  await mongoose.connection.asPromise();
 });
 
 afterAll(async () => {
+  // Clean up the test database so each run starts fresh.
+  if (!mongod && mongoose.connection.db) {
+    try {
+      await mongoose.connection.db.dropDatabase();
+    } catch (error) {
+      console.warn("Could not drop test database:", error.message);
+    }
+  }
   await mongoose.connection.close();
-  await mongod.stop();
+  if (mongod) {
+    await mongod.stop();
+  }
 });
 
 describe("Crime report submission & tracking", () => {

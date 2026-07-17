@@ -13,6 +13,12 @@ const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
 
+// Debug: log every incoming request to aid troubleshooting connection resets
+app.use((req, res, next) => {
+  console.log(`DEBUG_INCOMING_REQUEST: ${req.method} ${req.url} from ${req.ip}`);
+  next();
+});
+
 // --- Security & core middleware ---
 app.use(helmet());
 app.use(
@@ -52,13 +58,21 @@ process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Crime reporting API running on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
+// Only start listening when executed directly (e.g. `node server.js`).
+// When require()'d by Supertest integration tests the server is not bound to
+// any port — Supertest creates its own ephemeral listener internally.
+if (require.main === module) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      // eslint-disable-next-line no-console
+      console.log(`Crime reporting API running on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
+    });
   });
-});
+} else {
+  // Tests: connect to DB but don't bind a port; Supertest handles that.
+  connectDB();
+}
 
 module.exports = app; // exported for Supertest integration tests

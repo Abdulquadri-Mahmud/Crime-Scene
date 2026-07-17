@@ -66,33 +66,32 @@ export default function HomePage() {
     <main className="bg-gradient-to-b from-paper via-paper to-surface">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 opacity-30">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-seal rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-progress rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 -z-10 opacity-40">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-seal rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-progress rounded-full blur-3xl"></div>
         </div>
 
         <div className="mx-auto max-w-7xl px-6 py-24 md:py-32">
-          <div className="grid gap-16 md:grid-cols-[1.4fr_1fr] md:items-center">
+          <div className="grid gap-16 lg:grid-cols-[1.35fr_1fr] lg:items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              <div className="space-y-4">
-                <div className="inline-block">
-                  <span className="badge badge-primary flex items-center gap-2">
-                    <Shield size={18} /> Community Crime Reporting System
-                  </span>
-                </div>
-                <h1 className="text-headline text-ink">
-                  Report Crime. <br />
+              <div className="flex flex-wrap items-center gap-3 rounded-full border border-seal/20 bg-seal/5 px-5 py-2 text-sm font-medium text-seal shadow-sm shadow-seal/10">
+                <Shield size={18} />
+                <span>Secure community reporting with real-time tracking and privacy-first protection.</span>
+              </div>
+
+              <div className="space-y-5">
+                <h1 className="text-headline text-ink tracking-tight sm:text-[3.5rem]">
+                  Report crime safely, <br />
                   <span className="bg-gradient-to-r from-seal to-sealDark bg-clip-text text-transparent">
-                    Track Justice.
+                    track justice faster.
                   </span>
                 </h1>
-                <p className="text-lg leading-relaxed text-ink/70 max-w-lg">
-                  A secure platform for community members to report incidents anonymously, track their cases in real-time, and help law enforcement keep our neighborhoods safe.
+                <p className="max-w-3xl text-lg leading-relaxed text-ink/75">
+                  A trusted platform for community members to submit incidents confidentially, receive a unique tracking ID, and follow every update until resolution.
                 </p>
               </div>
 
-              {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/report/new" className="btn btn-primary btn-lg inline-flex items-center gap-2 justify-center">
                   <FileText size={20} /> File a Report
@@ -102,66 +101,70 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* Trust Indicators */}
-              <div className="pt-6 border-t border-line flex items-center gap-8 text-sm">
-                <div>
-                  <p className="font-semibold text-ink">Secure</p>
-                  <p className="text-ink/60">End-to-end encrypted</p>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="rounded-3xl border border-line bg-paper/90 p-5 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/50">Secure</p>
+                  <p className="mt-3 font-semibold text-ink">Encrypted reports & case notes</p>
                 </div>
-                <div>
-                  <p className="font-semibold text-ink">Anonymous</p>
-                  <p className="text-ink/60">Optional reporting</p>
+                <div className="rounded-3xl border border-line bg-paper/90 p-5 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/50">Instant</p>
+                  <p className="mt-3 font-semibold text-ink">Unique tracking ID delivered instantly</p>
                 </div>
-                <div>
-                  <p className="font-semibold text-ink">24/7</p>
-                  <p className="text-ink/60">Always available</p>
+                <div className="rounded-3xl border border-line bg-paper/90 p-5 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/50">Transparent</p>
+                  <p className="mt-3 font-semibold text-ink">Status updates at every stage</p>
                 </div>
               </div>
             </div>
 
             {/* Right - Case File Preview */}
-            <div className="hidden md:block">
-              <div className="case-tab" data-tab="Preview Case CR-2026-001547">
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-mono text-ink/50">Case Tracking ID</p>
-                      <p className="font-display text-xl font-bold text-ink mt-1">CR-2026-001547</p>
-                    </div>
-                    <span className="badge badge-info">Investigating</span>
+            <div className="relative">
+              <div className="absolute -inset-x-6 top-4 hidden h-72 rounded-[2rem] bg-gradient-to-b from-seal/20 to-transparent blur-3xl lg:block"></div>
+              <div className="relative overflow-hidden rounded-[2rem] border border-line bg-surface/95 p-6 shadow-2xl shadow-ink/10 backdrop-blur-xl">
+                <div className="flex items-center justify-between gap-4 rounded-3xl bg-paper/90 p-5 shadow-sm">
+                  <div>
+                    <p className="text-sm font-mono text-ink/50">Live Case Preview</p>
+                    <p className="font-display text-xl font-bold text-ink mt-1">CR-2026-001547</p>
                   </div>
+                  <span className="badge badge-info">Investigating</span>
+                </div>
 
-                  <div className="divider"></div>
-
+                <div className="mt-6 rounded-3xl border border-line bg-paper/90 p-5 shadow-sm">
                   <div className="grid gap-4">
                     <div>
-                      <p className="text-xs text-ink/50 font-mono uppercase">Incident Type</p>
-                      <p className="text-ink font-semibold mt-1">Theft</p>
+                      <p className="text-xs text-ink/50 uppercase tracking-[0.2em]">Incident Type</p>
+                      <p className="mt-2 text-ink font-semibold">Theft</p>
                     </div>
                     <div>
-                      <p className="text-xs text-ink/50 font-mono uppercase">Location</p>
-                      <p className="text-ink">Saapade Community Market, Ogun State</p>
+                      <p className="text-xs text-ink/50 uppercase tracking-[0.2em]">Location</p>
+                      <p className="mt-2 text-ink">Saapade Community Market, Ogun State</p>
                     </div>
                     <div>
-                      <p className="text-xs text-ink/50 font-mono uppercase">Date Filed</p>
-                      <p className="text-ink">Jan 15, 2026 • 2:34 PM</p>
+                      <p className="text-xs text-ink/50 uppercase tracking-[0.2em]">Date Filed</p>
+                      <p className="mt-2 text-ink">Jan 15, 2026 • 2:34 PM</p>
                     </div>
                   </div>
 
                   <div className="divider"></div>
 
-                  <div className="timeline space-y-3">
-                    <div className="timeline-item">
-                      <p className="font-semibold text-sm text-ink">Report Received</p>
-                      <p className="text-xs text-ink/60 mt-1">Jan 15, 2:35 PM</p>
+                  <div className="space-y-4">
+                    <div className="rounded-3xl bg-emerald-50/90 p-4 text-ink">
+                      <p className="text-sm font-semibold">Current status</p>
+                      <p className="mt-1 text-xs text-ink/60">The case is actively under investigation by our local review team.</p>
                     </div>
-                    <div className="timeline-item">
-                      <p className="font-semibold text-sm text-ink">Under Review</p>
-                      <p className="text-xs text-ink/60 mt-1">Jan 16, 10:15 AM</p>
-                    </div>
-                    <div className="timeline-item">
-                      <p className="font-semibold text-sm text-ink">Investigating</p>
-                      <p className="text-xs text-ink/60 mt-1">Jan 17, 3:45 PM</p>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm text-ink/60">
+                        <span>Report Received</span>
+                        <span>Jan 15</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-ink/60">
+                        <span>Under Review</span>
+                        <span>Jan 16</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-ink/60">
+                        <span>Investigating</span>
+                        <span>Jan 17</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -211,10 +214,6 @@ export default function HomePage() {
               </div>
             );
           })}
-        </div>
-      </section>
-            </div>
-          ))}
         </div>
       </section>
 
